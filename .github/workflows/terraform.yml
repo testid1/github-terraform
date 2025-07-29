@@ -1,0 +1,31 @@
+name: Terraform GitHub Repo Automation
+
+on:
+  workflow_dispatch:  # allows manual trigger
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_github_token: ${{ secrets.GH_PAT }}
+      TF_VAR_github_owner: "testid1"     
+      TF_VAR_repo_name: "new-repo"    
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.0
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
